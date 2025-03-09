@@ -23,68 +23,84 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<EmployeeData> employeesData = new ArrayList<>();
         List<Employee> employees = new ArrayList<>();
         employeeDataRepository.findAll().forEach(employeesData::add);
-        Iterator<EmployeeData> it = employeesData.iterator();
 
-        while(it.hasNext()) {
+        for (EmployeeData employeeData : employeesData) {
             Employee employee = new Employee();
-            EmployeeData employeeData = it.next();
             employee.setId(employeeData.getId());
             employee.setName(employeeData.getName());
+            employee.setJobTitle(employeeData.getJobTitle());
+            employee.setSalary(employeeData.getSalary());
+            employee.setEmploymentType(employeeData.getEmploymentType()); // Enum
             employees.add(employee);
         }
 
-        Employee[] array = new Employee[employees.size()];
-        for  (int i=0; i<employees.size(); i++){
-            array[i] = employees.get(i);
-        }
-//        Employee[] array = (Employee[])employees.toArray();
-        return array;
+        return employees.toArray(new Employee[0]);
     }
 
     @Override
     public Employee create(Employee employee) {
-        logger.info("add: Input"+ employee.toString());
+        logger.info("add: Input " + employee.toString());
         EmployeeData employeeData = new EmployeeData();
         employeeData.setName(employee.getName());
+        employeeData.setJobTitle(employee.getJobTitle());
+        employeeData.setSalary(employee.getSalary());
+        employeeData.setEmploymentType(employee.getEmploymentType()); // Enum
 
         employeeData = employeeDataRepository.save(employeeData);
-        logger.info("add: Input"+ employeeData.toString());
 
         Employee newEmployee = new Employee();
         newEmployee.setId(employeeData.getId());
         newEmployee.setName(employeeData.getName());
+        newEmployee.setJobTitle(employeeData.getJobTitle());
+        newEmployee.setSalary(employeeData.getSalary());
+        newEmployee.setEmploymentType(employeeData.getEmploymentType());
+
         return newEmployee;
     }
 
     @Override
     public Employee update(Employee employee) {
-        EmployeeData employeeData = new EmployeeData();
-        employeeData.setId(employee.getId());
+        Optional<EmployeeData> optional = employeeDataRepository.findById(employee.getId());
+        if (!optional.isPresent()) {
+            return null; // Or handle not found case
+        }
+
+        EmployeeData employeeData = optional.get();
         employeeData.setName(employee.getName());
+        employeeData.setJobTitle(employee.getJobTitle());
+        employeeData.setSalary(employee.getSalary());
+        employeeData.setEmploymentType(employee.getEmploymentType());
 
         employeeData = employeeDataRepository.save(employeeData);
 
-        Employee newEmployee = new Employee();
-        newEmployee.setId(employeeData.getId());
-        newEmployee.setName(employeeData.getName());
-        return newEmployee;
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(employeeData.getId());
+        updatedEmployee.setName(employeeData.getName());
+        updatedEmployee.setJobTitle(employeeData.getJobTitle());
+        updatedEmployee.setSalary(employeeData.getSalary());
+        updatedEmployee.setEmploymentType(employeeData.getEmploymentType());
+
+        return updatedEmployee;
     }
 
     @Override
     public Employee getEmployee(Integer id) {
-        logger.info("Input id >> "+  Integer.toString(id) );
         Optional<EmployeeData> optional = employeeDataRepository.findById(id);
-        if(optional.isPresent()) {
-            logger.info("Is present >> ");
-            Employee employee = new Employee();
-            EmployeeData employeeDatum = optional.get();
-            employee.setId(employeeDatum.getId());
-            employee.setName(employeeDatum.getName());
-            return employee;
+        if (!optional.isPresent()) {
+            return null;
         }
-        logger.info("Failed  >> unable to locate employee" );
-        return null;
+
+        EmployeeData employeeData = optional.get();
+        Employee employee = new Employee();
+        employee.setId(employeeData.getId());
+        employee.setName(employeeData.getName());
+        employee.setJobTitle(employeeData.getJobTitle());
+        employee.setSalary(employeeData.getSalary());
+        employee.setEmploymentType(employeeData.getEmploymentType());
+
+        return employee;
     }
+
 
     @Override
     public void delete(Integer id) {

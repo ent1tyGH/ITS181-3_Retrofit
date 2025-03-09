@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -20,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,22 +51,37 @@ fun EmployeeScreen(viewModel: EmployeeViewModel = viewModel()) {
 
 @Composable
 fun EmployeeList(Employees: List<Employee>) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
         items(Employees) { Employee ->
             EmployeeItem(Employee = Employee)
         }
     }
 }
 
+
 @Composable
 fun EmployeeItem(Employee: Employee) {
-    Row {
-        Column {
-        Text(text = Employee.id.toString())
-        Text(text = Employee.name)
-        }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = Employee.id.toString(),
+            modifier = Modifier
+                .weight(1f)
+                .padding(4.dp)
+        )
+        Text(
+            text = Employee.name,
+            modifier = Modifier
+                .weight(3f)
+                .padding(4.dp)
+        )
     }
 }
+
+
 
 @Composable
 fun LoadingScreen() {

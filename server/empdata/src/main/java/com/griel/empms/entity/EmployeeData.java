@@ -1,5 +1,7 @@
 package com.griel.empms.entity;
 
+import com.griel.empms.model.EmploymentType;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +18,10 @@ public class EmployeeData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
     String name;
+    String jobTitle;
+    double salary;
+    @Enumerated(EnumType.STRING)
+    private EmploymentType employmentType;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
